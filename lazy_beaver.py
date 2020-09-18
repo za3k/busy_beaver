@@ -1,4 +1,4 @@
-import copy
+import copy, math, time
 from collections import defaultdict
 
 DIRECTIONS = (-1, 1)
@@ -28,18 +28,6 @@ class TuringMachine():
             for machine in machines:
                 machine.concrete_step()
             return machines
-
-    def can_prove_runs_n_more_steps(self, n):
-        new = copy.deepcopy(self)
-        try:
-            for _ in range(n):
-                new.concrete_step()
-            if new.is_halted():
-                return False
-            else:
-                return True
-        except NotConcreteError:
-            return False
 
     def concrete_step(self):
         if self.is_halted():
@@ -90,43 +78,7 @@ class TuringMachine():
     def is_halted(self):
         return self.state is None
 
-def step_all(machines):
-    return [x for machine in machines for x in machine.step()]
-
-def distribution():
-    """Just to help test and make sure we can find ex. the BB(3) machine"""
-    MACHINE_SIZE=3
-    MAX_STEPS=200
-
-    machines = [TuringMachine(MACHINE_SIZE)]
-    for step_number in range(1, MAX_STEPS+1):
-        stepped_machines = step_all(machines)
-        running_machines = [machine for machine in stepped_machines if not machine.is_halted()]
-        num_halted = len(stepped_machines) - len(running_machines)
-        if num_halted != 0:
-            print("Halting on step {}: {} machines".format(step_number, num_halted))
-        machines = running_machines
-    print("Didn't halt in {} steps: {} machines".format(MAX_STEPS, len(machines)))
-
-def lazy_beaver_breadth():
-    MACHINE_SIZE=5
-    MAX_STEPS=500
-
-    machines = [TuringMachine(MACHINE_SIZE)]
-    for step_number in range(1, MAX_STEPS+1):
-        print("Searching step {} ({}-state machines: {})".format(step_number, MACHINE_SIZE, len(machines)))
-        stepped_machines = step_all(machines)
-        running_machines = [machine for machine in stepped_machines if not machine.is_halted() and not machine.can_prove_runs_n_more_steps(MAX_STEPS)]
-        num_halted = len(stepped_machines) - len(running_machines)
-        machines = running_machines
-        if num_halted == 0:
-            print("LB({})={}".format(MACHINE_SIZE, step_number))
-            return
-
-def lazy_beaver_depth():
-    MACHINE_SIZE=4
-    MAX_STEPS=100
-
+def lazy_beaver_depth(MACHINE_SIZE, MAX_STEPS):
     machine_stack = [TuringMachine(MACHINE_SIZE)]
     all_steps = set(range(1, MAX_STEPS+1))
     hit_steps = set()
@@ -140,16 +92,24 @@ def lazy_beaver_depth():
                 hit_steps.add(machine.step_num)
         except NotConcreteError:
             new_machines = machine.step()
-            if (machines_searched//10000) < ((machines_searched + len(new_machines))//10000):
-                print("{} machines searched (stack size: {})".format((machines_searched//10000)*10000+10000, len(machine_stack)))
             machines_searched += len(new_machines)
             machine_stack.extend(new_machines)
         
     missing_steps = list(all_steps - hit_steps)
     if len(missing_steps) == 0:
-        print("LB({})=??? [increase MAX_STEPS]".format(MACHINE_SIZE))
+        return None, machines_searched
     else:
-        print("Searched all {} distinct machines".format(machines_searched))
-        print("LB({})={}".format(MACHINE_SIZE, min(missing_steps)))
+        return min(missing_steps), machines_searched
 
-lazy_beaver_depth()
+steps_hint = { 4: 100, 5: 500 }
+max_steps = 1
+for machine_size in range(10):
+    start_time = time.time()
+    max_steps = max(max_steps, steps_hint.get(machine_size, 1))
+    steps = None
+    while steps is None:
+        steps, machines_searched = lazy_beaver_depth(machine_size, max_steps)
+        if steps is None and max_steps >= 10:
+            print("LB({}) > {} [{} machines searched, {}s search time so far]".format(machine_size, max_steps, machines_searched, math.ceil(time.time() - start_time)))
+        max_steps = 10**(int(math.log(max_steps, 10))+1)
+    print("LB({}) = {} [{} machines searched, {}s search time]".format(machine_size, steps, machines_searched, math.ceil(time.time() - start_time)))
