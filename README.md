@@ -1,4 +1,4 @@
-# Busy Beaver Problem and related Problems.
+# Busy Beaver Problem (and related problems)
 Here we use the usual definition of a turning machine--there is a double-sided, infinite tape of cells. Each cell can be 0 or 1, and they are initially all zeros. The turing machine uses its current state and the symbol under the read head, together with a fixed lookup table, to:
 - HALT or
 - Write a (fixed) value to the current cell, then move left or right (no staying still), then transition to a (fixed) new state.
