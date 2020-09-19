@@ -13,8 +13,24 @@ BBB(x) = N. For each integer x, what is the greatest number N such that there is
 
 # This repository
 
-lazy_beaver.py is provided which calculates small values of LB(x) (good up until about x=5). Just run the program directly from Python, on a machine which will stay powered on and otherwise idle for at least a week.
+lazy_beaver.py is provided which calculates small values of LB(x) (good up until about x=5). Just run the program directly from Python, on a machine which will stay powered on and otherwise idle for at least a week. 
 
-# Results
+# Speedups used
 
-TODO (will update after running longer)
+There are (4n+1)^(2n) machines with n states, so we want algorithmic optimizations. This program includes the following optimizations to calculate on less machines:
+- (~60x for 4-state machines, emperically) Work with abstract machines. Transition information is not written down until it's used. This means for example that all `(4n+1)^(2n-1)` machines that halt on the first step, are computed together in constant time. We "split" a machine into more concrete machines each time the information in a transition is needed.
+- (2x) Assume the first tape move is to the left. Interchanging "left" and "right" in a machine turns it into an equivalent machine.
+- ((n-1)! x, ex. 6x for 4-state, 24x for 5-state) Assume the states are accessed in numerical order. Permuting the states of the machine, as long as the initial state is the same, turns the machine into an equivalent machine. 
+- (Note that permuting the non-zero symbols on both read and write is also valid, but this is a no-op for 2-symbol tapes. 0 and 1 can't be swapped because the tape starts filled with all 0s.)
+- No optimizations are used to detect infinite loops.
+
+# Results (may will be updated)
+
+```
+2020-09-19 run of lazy_beaver.py
+LB(0) = 2 [2 machines searched, 1s search time]
+LB(1) = 2 [4 machines searched, 1s search time]
+LB(2) = 7 [168 machines searched, 1s search time]
+LB(3) = 22 [23029 machines searched, 18s search time]
+LB(4) = 72 [4244698 machines searched, 3425s search time]
+```
