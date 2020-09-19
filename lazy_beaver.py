@@ -110,6 +110,6 @@ for machine_size in range(10):
     while steps is None:
         steps, machines_searched = lazy_beaver_depth(machine_size, max_steps)
         if steps is None and max_steps >= 10:
-            print("LB({}) > {} [{} machines searched, {}s search time so far]".format(machine_size, max_steps, machines_searched, math.ceil(time.time() - start_time)))
+            print("LB({}) > {} [{} machines searched, {}s search time so far]".format(machine_size, max_steps, machines_searched, math.ceil(time.time() - start_time)), flush=True)
         max_steps = 10**(int(math.log(max_steps, 10))+1)
-    print("LB({}) = {} [{} machines searched, {}s search time]".format(machine_size, steps, machines_searched, math.ceil(time.time() - start_time)))
+    print("LB({}) = {} [{} machines searched, {}s search time]".format(machine_size, steps, machines_searched, math.ceil(time.time() - start_time)), flush=True)
