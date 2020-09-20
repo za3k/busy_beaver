@@ -13,7 +13,9 @@ BBB(x) = N. For each integer x, what is the greatest number N such that there is
 
 # This repository
 
-lazy_beaver.py is provided which calculates small values of LB(x) (good up until about x=5). Just run the program directly from Python, on a machine which will stay powered on and otherwise idle for at least a week. 
+lazy_beaver.py is provided which calculates small values of LB(x) (good up until about x=5). Run `python3 lazy_beaver.py | tee lazy_beaver.log` on a machine which will stay powered on and otherwise idle for at least a week.
+
+lazy_beaver.rs is exactly the same, but re-written in Rust for speed. Run `cd lazy_beaver && cargo run | tee lazy_beaver.log`.
 
 # Speedups used
 
@@ -33,4 +35,14 @@ LB(1) = 2 [4 machines searched, 1s search time]
 LB(2) = 7 [168 machines searched, 1s search time]
 LB(3) = 22 [23029 machines searched, 18s search time]
 LB(4) = 72 [4244698 machines searched, 3425s search time]
+```
+
+```
+2020-09-19 run of lazy_beaver.rs on same machine
+LB(1) = 2 [4 machines, 0s, 6x speedup]
+LB(2) = 7 [168 machines, 0s, 39x speedup]
+LB(3) = 22 [23029 machines, 0s, 209x speedup]
+LB(4) = 72 [4244681 machines, 88s, 1643x speedup]
+```
+
 ```
