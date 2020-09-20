@@ -22,10 +22,10 @@ lazy_beaver.py and lazy_beaver.rs calculate values of LB(n) (good up until about
 # Speedups used
 
 There are (4n+1)^(2n) machines with n states, and we need to run each for LB(n) steps. We want algorithmic optimizations, not just runtime ones. This program includes the following optimizations to calculate on less machines:
-- `emperical` (60x for 4-state) Work with abstract machines. Transition information is not written down until it's used. This means for example that all `(4n+1)^(2n-1)` machines that halt on the first step, are computed together in constant time. We "split" a machine into more concrete machines each time the information in a transition is needed, eventually stopping the process with a fully defined machine.
-- `2x` Assume the first tape move is to the left. Interchanging "left" and "right" in a machine turns it into an equivalent machine.
+- `2x` Interchanging "left" and "right" in a machine turns it into an equivalent machine. Assume the first tape move is to the right.
 - `1x` Permuting the (non-zero) symbols is valid, but there's only one non-zero symbol.
-- `(n-1)! x` (6x for 4-state, 24x for 5-state) Assume the states are accessed in numerical order. Permuting the states of the machine, as long as the initial state is the same, turns the machine into an equivalent machine.
+- `(n-1)! x` (6x for 4-state, 24x for 5-state) Permuting the (non-start) states gives an equivalent machine. So assume the states are accessed in numerical order.
+- `emperical` (60x for 4-state) Work with abstract machines. Transition information is not written down until it's used. This means for example that all `(4n+1)^(2n-1)` machines that halt on the first step, are computed together in constant time. We "split" a machine into more concrete machines each time the information in a transition is needed, eventually stopping the process with a fully defined machine.
 - `40x` Rewritten from naive Python to (fairly naive) Rust. In theory it should run in L1 cache only now.
 - No optimizations are used to detect infinite loops (ex, move right and stay in the same state forever).
 - The application runs one one thread on one computer.
