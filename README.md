@@ -30,7 +30,6 @@ There are (4n+1)^(2n) machines with n states, so we want algorithmic optimizatio
 
 ```
 2020-09-19 run of lazy_beaver.py
-LB(0) = 2 [2 machines searched, 1s search time]
 LB(1) = 2 [4 machines searched, 1s search time]
 LB(2) = 7 [168 machines searched, 1s search time]
 LB(3) = 22 [23029 machines searched, 18s search time]

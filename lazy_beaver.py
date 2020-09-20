@@ -103,7 +103,7 @@ def lazy_beaver_depth(MACHINE_SIZE, MAX_STEPS):
 
 steps_hint = { 4: 100, 5: 500 }
 max_steps = 1
-for machine_size in range(10):
+for machine_size in range(1,10):
     start_time = time.time()
     max_steps = max(max_steps, steps_hint.get(machine_size, 1))
     steps = None
