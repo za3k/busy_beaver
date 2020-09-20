@@ -1,0 +1,17 @@
+[package]
+name = "lazy_beaver"
+version = "0.1.0"
+authors = ["Zachary Vance <za3k@za3k.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "abstract_turing"
+path = "src/lib.rs"
+
+[[bin]]
+name = "lazy_beaver"
+path = "src/bin.rs"
+
+[dependencies]
