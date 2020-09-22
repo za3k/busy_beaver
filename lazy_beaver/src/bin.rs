@@ -1,9 +1,9 @@
 use std::time::Instant;
 
 fn main() {
-    let mut max_steps = 10000;
+    let mut max_steps = 10;
     let start = Instant::now();
-    for n in 6..=10 {
+    for n in 1..=5 {
         let theory_machines: u64 = (n as u64*4+1).pow(n as u32*2);
         loop { 
             let result = abstract_turing::lazy_beaver_limited(n, max_steps);
