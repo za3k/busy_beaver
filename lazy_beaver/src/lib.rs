@@ -41,6 +41,8 @@ fn cannot_halt(tm: ATM) -> bool {
         if reachable_directions.len() > 1 { readable_symbols.extend(writable_tape_symbols.iter()); }
 
         let mut new_reachable_states = HashSet::new();
+        let mut new_reachable_directions = HashSet::new();
+        let mut new_writable_tape_symbols = HashSet::new();
 
         for x in reachable_states.iter() {
             if let Some(state) = x {
@@ -53,24 +55,22 @@ fn cannot_halt(tm: ATM) -> bool {
                         },
                         Some(Some((state, symbol, direction))) => {
                             new_reachable_states.insert(Some(state));
-                            reachable_directions.insert(direction);
-                            writable_tape_symbols.insert(symbol);
+                            new_reachable_directions.insert(direction);
+                            new_writable_tape_symbols.insert(symbol);
                         }
                     }
                 }
             }
         }
-        if reachable_states.is_superset(&new_reachable_states) {
+        if reachable_states.is_superset(&new_reachable_states) && reachable_directions.is_superset(&new_reachable_directions) && writable_tape_symbols.is_superset(&new_writable_tape_symbols) {
             break
         } else {
             reachable_states.extend(new_reachable_states);
+            reachable_directions.extend(new_reachable_directions);
+            writable_tape_symbols.extend(new_writable_tape_symbols);
         }
     }
-    if !reachable_states.contains(&None) {
-        return true
-    }
-    false
-    
+    !reachable_states.contains(&None)
 }
 
 enum ExecutionResult {
@@ -184,7 +184,7 @@ pub fn lazy_beaver_limited(states: u8, max_steps: u64) -> (Info, Option<u64>) {
     }
     
     let info = (machines_seen, machines_halted, machines_neverhalt);
-    (info, steps_seen.iter().position(|x| !x).map(|x| x as u64))
+    (info, steps_seen.iter().position(|x| !x).map(|x| x as u64 + 1))
 }
 
 pub fn lazy_beaver(states: u8) -> u64 {
