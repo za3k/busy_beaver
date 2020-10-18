@@ -16,3 +16,10 @@ path = "src/bin.rs"
 
 [dependencies]
 bit-set = "0.5.0"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "lazy_beaver_limited"
+harness = false
